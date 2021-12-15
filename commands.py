@@ -1,12 +1,29 @@
-from database import WalletQuery
+from controllers.purchaseController import PurchaseController
+from controllers.salesController import SalesController
+from controllers.stockController import StockController
+from controllers.walletController import WalletController
+from database.purchaseQuery import PurchaseQuery
+from database.saleQuery import SaleQuery
+from database.stockQuery import StockQuery
+from database.walletQuery import WalletQuery
 
-wallet_query = WalletQuery()
+walletQuery = WalletQuery()
+stockQuery = StockQuery()
+purchaseQuery = PurchaseQuery()
+saleQuery = SaleQuery()
+
+walletController = WalletController(walletQuery)
+stockController = StockController(walletQuery, stockQuery)
+purchaseController = PurchaseController(purchaseQuery, stockQuery, walletQuery)
+salesController = SalesController(purchaseQuery, saleQuery)
 
 def analyzing_command(command: str):
   first_args = {
-    'create_wallet': create_wallet,
-    'show_wallet': show_wallet,
-    'list_wallets': list_wallets,
+    'create_wallet': walletController.create_wallet,
+    'show_wallet': walletController.show_wallet,
+    'list_wallets': walletController.list_wallets,
+    'buy_stock': purchaseController.purchase_execution,
+    'send_stock': salesController.sale_execution
   }
 
   args = command.split()
@@ -16,25 +33,4 @@ def analyzing_command(command: str):
   except KeyError:
     print('This first command not exists')
 
-
-def create_wallet(args: list):
-  try:
-    name_index = args.index('--name') + 1
-    balance_index = args.index('--balance') + 1
-
-  except ValueError:
-    print('Some arguments (--name or --balance) do not exist on the command')
-    return
-
-  wallet_query.insert_wallet(args[name_index], args[balance_index])
-
-def show_wallet(args: list):
-  name_index = args.index('--name') + 1
-
-  print(wallet_query.select_from_name(args[name_index]))
-
-def list_wallets(args: list):
-  for row in wallet_query.select_all():
-    print('\n')
-    print(f'Name: {row[1]}')
-    print(f'Balance: {row[2]}')
+  

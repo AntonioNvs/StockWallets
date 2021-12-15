@@ -10,7 +10,8 @@ while True:
 
     analyzing_command(command)
 
-    sleep(5)
+    sleep(2)
+    
   except KeyboardInterrupt:
     system('cls')
     print('Outing from the program in two seconds..')
