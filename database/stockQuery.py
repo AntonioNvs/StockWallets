@@ -15,5 +15,13 @@ class StockQuery(Database):
   def select_all(self) -> list:
     return self.execute_query_with_return(f"SELECT * FROM {self.name_table}")
 
-  def select_stock_by_ticker(self, ticker):
+  def select_stock_by_ticker(self, ticker: str) -> list:
     return self.execute_query_with_return(f"SELECT * FROM {self.name_table} WHERE ticker = '{ticker}'")
+
+  def select_stocks_by_wallet_id(self, id_wallet: int) -> list:
+    return self.execute_query_with_return(f"SELECT * FROM {self.name_table} WHERE id_wallet = {id_wallet}")
+
+  def select_stocks_by_wallet_id_and_ticker(self, id_wallet: int, ticker: str) -> list:
+    return self.execute_query_with_return(
+      f"SELECT * FROM {self.name_table} WHERE id_wallet = {id_wallet} AND ticker = '{ticker}'"
+    )

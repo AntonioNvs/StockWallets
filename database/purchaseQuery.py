@@ -14,3 +14,6 @@ class PurchaseQuery(Database):
 
   def select_all(self) -> list:
     return self.execute_query_with_return(f"SELECT * FROM {self.name_table}")
+
+  def select_purchases_by_id_stock(self, id_stock: int) -> list:
+    return self.execute_query_with_return(f"SELECT * FROM {self.name_table} WHERE id_stock = {id_stock}")

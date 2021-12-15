@@ -2,7 +2,7 @@ from database.purchaseQuery import PurchaseQuery
 from database.stockQuery import StockQuery
 from database.walletQuery import WalletQuery
 from stocks import get_stocks_value
-
+from decimal import Decimal
 
 class PurchaseController:
   def __init__(self, purchaseQuery: PurchaseQuery, stockQuery: StockQuery, walletQuery: WalletQuery) -> None:
@@ -51,7 +51,7 @@ class PurchaseController:
     for _ in range(qtd):
       self.purchaseQuery.insert(id_stock, current_price)
 
-    self.walletQuery.update_balance(id_wallet, -spent) # Updating the wallet balance
+    self.walletQuery.update_balance(id_wallet, balance - spent) # Updating the wallet balance
 
     print(f'Spent: {spent}')
     print(f'New balance: {balance - spent}')

@@ -15,7 +15,7 @@ saleQuery = SaleQuery()
 walletController = WalletController(walletQuery)
 stockController = StockController(walletQuery, stockQuery)
 purchaseController = PurchaseController(purchaseQuery, stockQuery, walletQuery)
-salesController = SalesController(purchaseQuery, saleQuery)
+salesController = SalesController(walletQuery, stockQuery, purchaseQuery, saleQuery)
 
 def analyzing_command(command: str):
   first_args = {

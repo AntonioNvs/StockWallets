@@ -8,7 +8,7 @@ class SaleQuery(Database):
   def insert(self, id_purchase: int, sale_price: float) -> int:
     return self.execute_insert_query(
       f"""
-        INSERT INTO {self.name_table} (id_purchase, purchase_price) VALUES ({id_purchase}, {sale_price});
+        INSERT INTO {self.name_table} (id_purchase, sale_price) VALUES ({id_purchase}, {sale_price});
       """
     )
 
