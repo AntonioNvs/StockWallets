@@ -1,11 +1,21 @@
-from database.walletQuery import WalletQuery
-
+from services.walletService import WalletService
+from utils.verify import verify_args
+from time import sleep
 
 class WalletController:
-  def __init__(self, walletQuery: WalletQuery) -> None:
-    self.walletQuery = walletQuery
+  def __init__(self) -> None:
+    self.walletService = WalletService()
+
 
   def create_wallet(self, args: list) -> None:
+
+    result = verify_args(args, ['--name', '--balance'])
+    
+    # if there aren't arguments enough, is printed and the program return
+    if len(result) == 0: return
+
+    name, balance = result
+
     try:
       name = args[args.index('--name') + 1]
       balance = args[args.index('--balance') + 1]
@@ -14,28 +24,41 @@ class WalletController:
       print('Some arguments (--name or --balance) do not exist on the command')
       return
 
-    self.walletQuery.insert(name, balance)
+    self.walletService.create(name, balance)
+
 
   def show_wallet(self, args: list):
-    try:
-      name = args[args.index('--name') + 1]
-    except ValueError:
-      print('Some arguments (--name) do not exist on the command')
-      return
-
-    response = self.walletQuery.select_wallet_by_name(name)[0]
-
-    if len(response) > 0:
-      _, name, balance, _ = response
-    else:
-      print("There isn't wallet with this name.")
+    result = verify_args(args, ['--name'])
+    
+    # if there aren't arguments enough, is printed and the program return
+    if len(result) == 0: return
+    
+    name = result[0]
+    
+    info, balance = self.walletService.show_info_wallet(name)
 
     print()
     print(f'Name: {name}')
     print(f'Balance: {balance}')
+    print()
 
+    if len(info.keys()) == 0: 
+      print("This wallet doesn't have stocks bought.")
+      return
+
+    for ticker in info.keys():
+      print(f"Ticker: {ticker}")
+      print(f"Quantity: {info[ticker]['quantity']}")
+      print(f"Spent: {info[ticker]['spent']}")
+      print(f"Current total: {info[ticker]['current_price']}")
+      print(f"Profit: {info[ticker]['profit']}%")
+
+      print()
+
+    sleep(20)
+    
   def list_wallets(self, args: list):
-    for row in self.walletQuery.select_all():
+    for row in self.walletService.list():
       print('\n')
       print(f'Name: {row[1]}')
       print(f'Balance: {row[2]}')

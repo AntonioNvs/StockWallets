@@ -2,7 +2,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 
-def get_stocks_value(stocksSymbols: list):
+def get_stocks_value(stocksSymbols: list) -> dict:
   url = 'https://valorinveste.globo.com/cotacoes/'
   
   result = urlopen(url).read()
@@ -19,7 +19,7 @@ def get_stocks_value(stocksSymbols: list):
     - Fechamento
   """
 
-  stocks: list = []
+  stocks: dict = {}
   all_ = []
 
   for s in html_stocks:
@@ -32,7 +32,10 @@ def get_stocks_value(stocksSymbols: list):
         value = float(tds[3].text.replace('%', '').strip().replace(',', '.'))
         last_price = float(tds[2].text.replace(',', '.'))
 
-        stocks.append((symbol, last_price, value))
+        stocks[symbol] = {
+          'last_price': last_price,
+          'cotation': value
+        }
 
       all_.append(tds[1].text)
 
@@ -42,4 +45,4 @@ def get_stocks_value(stocksSymbols: list):
   return stocks
 
 if __name__ == '__main__':
-  print(get_stocks_value(['ABEV3']))
+  print(get_stocks_value(['ABEV3', 'OIBR3']))

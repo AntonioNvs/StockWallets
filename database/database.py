@@ -28,15 +28,14 @@ class Database:
     try:
       self.cursor.execute(query)
     except Exception as e:
-      print(e.args)
       self.close_connection()
-      return 0
+      
+      raise Exception(e.args[1] + "\n" + f'Query: {query}')
     
     self.cnx.commit()
 
     last_id = self.cursor.lastrowid
 
-    print('The query for insert was executed with success!')
     self.close_connection()
 
     return last_id
@@ -48,13 +47,13 @@ class Database:
     try:
       self.cursor.execute(query)
     except Exception as e:
-      print(e.args)
       self.close_connection()
-      return
+      
+      raise Exception(e.args[1] + "\n" + f'Query: {query}')
+
 
     self.cnx.commit()
 
-    print('The query for update was executed with success!')
     self.close_connection()
 
   def execute_query_with_return(self, query) -> list:
@@ -66,8 +65,10 @@ class Database:
     try:
       self.cursor.execute(query)
     except Exception as e:
-      print(e.args)
-      return []
+      self.close_connection()
+      
+      raise Exception(e.args[1] + "\n" + f'Query: {query}')
+
 
     myresult = self.cursor.fetchall()
 
